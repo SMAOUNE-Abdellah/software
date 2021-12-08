@@ -157,7 +157,7 @@
                               <v-col cols="12" sm="7">
                                 <v-checkbox
                        
-                        label="I Accept AAE"
+                        label="I Accept Saasi"
                         class="mt-n1"
                         color="brown"
                       > </v-checkbox>

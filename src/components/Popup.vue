@@ -3,7 +3,7 @@
     <v-dialog
       v-model="dialog"
       persistent
-      max-width="800px"
+      max-width="600px"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
@@ -27,45 +27,32 @@
               <v-col
                 cols="12"
                 sm="6"
-                md="4"
+                md="6"
               >
                 <v-text-field
                   label="Saas Name"
-                  hint="example of helper text only on focus"
+                  hint="enter the company name of your client"
                   v-model="saasinfo.saasname"
                 ></v-text-field>
               </v-col>
               <v-col
                 cols="12"
                 sm="6"
-                md="4"
+                md="6"
               >
                 <v-text-field
-                  label="Saas Login"
-                  hint="example of persistent helper text"
-                  persistent-hint
-                  required
-                  v-model="saasinfo.saaslogin"
+                  label="Saas e-mail"                  
+                  v-model="saasinfo.saasmail"
                 ></v-text-field>
               </v-col>
-               <v-col
-                cols="12"
-                sm="6"
-                md="4"
-              >
-                <v-text-field
-                  label="Saas Password"
-                  hint="example of persistent helper text"
-                  persistent-hint
-                  required
-                  v-model="saasinfo.saasmp"
-                ></v-text-field>
-              </v-col>
+              
              
               <v-col cols="12">
                 <v-text-field
                   label="Password*"
                   type="password"
+                  hint="enter your password and confirme your identity"
+
                   required
                   v-model="saasinfo.password"
                 ></v-text-field>
@@ -75,24 +62,14 @@
                 sm="6"
               >
                 <v-autocomplete
-                  :items="['Oracle', 'MySQL', 'PostgreSQL', 'MongoDB', 'IBM DB2', 'SQLite', 'Microsoft SQL Server', 'Cassandra']"
-                  label="Database"
+                  :items="['Salsabiil e-commerce']"
+                  label="Services"
+                  hint="Add a Service for your client"
                   
-                  multiple
-                  v-model="saasinfo.db"
+                  v-model="saasinfo.service"
                 ></v-autocomplete>
               </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-              >
-                <v-autocomplete
-                  :items="['Apache', 'Nginx', 'BusyBox', 'Monkey Web Server', 'Node JS', 'Zeus Web Server', 'Hiawatha', 'Tomcat']"
-                  label="Web Server"
-                  multiple
-                  v-model="saasinfo.server"
-                ></v-autocomplete>
-              </v-col>
+             
             </v-row>
           </v-container>
           <small>*indicates required field</small>
@@ -127,21 +104,17 @@ import axios from 'axios'
       dialog: false,
       saasinfo: {
         saasname: '',
-        saaslogin: '',
-        saasmp: '',
+        saasmail: '',
         password: '',
-        server: [],
-        db: []
+        service: ''
       }
     }),
     methods: {
       create: function(){
         var Cdata = new FormData()
         Cdata.append('saasname',this.saasinfo.saasname)
-        Cdata.append('saaslogin',this.saasinfo.saaslogin)
-        Cdata.append('saasmp',this.saasinfo.saasmp)
-        Cdata.append('server',this.saasinfo.server)
-        Cdata.append('db',this.saasinfo.db)
+        Cdata.append('saasmail',this.saasinfo.saasmail)
+        Cdata.append('server',this.saasinfo.service)
         axios.post('http://localhost/pfe-backend/client.php?action=addclient',Cdata)
         .then( res=>{
           console.log(res.data)
