@@ -49,7 +49,7 @@
                                 <span class="caption brown--text">Forgot password</span>
                               </v-col>
                             </v-row>
-                          <v-btn color="brown" type="submit" dark block tile @click="logins()">Log in</v-btn>
+                          <v-btn color="brown" dark block tile @click="logins()">Log in</v-btn>
                      
                          <h5
                           class="text-center  grey--text mt-4 mb-3"
@@ -221,7 +221,7 @@
         var dataL = new FormData()
         dataL.append('email',this.login.email)
         dataL.append('password',this.login.password)
-        axios.post('http://localhost/pfe-backend/inscription.php?action=login',dataL)
+        axios.post('http://localhost/saas/src/php/inscription.php?action=login',dataL)
         .then( res =>{
             if (res.data[0]['email'] == this.login.email || res.data[0]['password'] == this.login.password) {
                 this.$router.push('/dashboard')
@@ -235,7 +235,7 @@
           dataS.append('username',this.signup.username)
           dataS.append('email',this.signup.email)
           dataS.append('password',this.signup.password)
-          axios.post('http://localhost/pfe-backend/inscription.php?action=signup',dataS)
+          axios.post('http://localhost/saas/src/php/inscription.php?action=signup',dataS)
           .then( res =>{
               console.log(res)
               this.$router.push('/dashboard')

@@ -53,8 +53,6 @@
                   type="password"
                   hint="enter your password and confirme your identity"
 
-                  required
-                  v-model="saasinfo.password"
                 ></v-text-field>
               </v-col>
               <v-col
@@ -65,7 +63,7 @@
                   :items="['Salsabiil e-commerce']"
                   label="Services"
                   hint="Add a Service for your client"
-                  
+                  multiple
                   v-model="saasinfo.service"
                 ></v-autocomplete>
               </v-col>
@@ -87,7 +85,7 @@
             color="brown darken-1"
             text
             type="submit"
-            @click=" create()"
+            @click.prevent=" create()"
           >
             Save
           </v-btn>
@@ -105,7 +103,6 @@ import axios from 'axios'
       saasinfo: {
         saasname: '',
         saasmail: '',
-        password: '',
         service: ''
       }
     }),
@@ -114,8 +111,8 @@ import axios from 'axios'
         var Cdata = new FormData()
         Cdata.append('saasname',this.saasinfo.saasname)
         Cdata.append('saasmail',this.saasinfo.saasmail)
-        Cdata.append('server',this.saasinfo.service)
-        axios.post('http://localhost/pfe-backend/client.php?action=addclient',Cdata)
+        Cdata.append('service',this.saasinfo.service)
+        axios.post('http://localhost/saas/src/php/client.php?action=addclient',Cdata)
         .then( res=>{
           console.log(res.data)
         })
