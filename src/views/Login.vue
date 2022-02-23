@@ -21,7 +21,7 @@
                             label="Email"
                             outlined
                             dense
-                            color="blue"
+                            color="brown"
                             autocomplete="false"
                            class="mt-16"
                            v-model="login.email"
@@ -30,10 +30,12 @@
                             label="Password"
                             outlined
                             dense
-                            color="blue"
+                            color="brown"
                           autocomplete="false"
-                           type="password"
                            v-model="login.password"
+                           :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                           :type="show ? 'text' : 'password'"
+                          @click:append="show = !show"
                           
                           />
                             <v-row>
@@ -42,7 +44,7 @@
                        
                         label="Remember Me"
                         class="mt-n1"
-                        color="blue"
+                        color="brown"
                       > </v-checkbox>
                               </v-col>
                               <v-col cols="12" sm="5">
@@ -117,7 +119,7 @@
                             label="Name"
                             outlined
                             dense
-                            color="blue"
+                            color="brown"
                             autocomplete="false"
                            class="mt-4"
                            v-model="signup.name"
@@ -128,7 +130,7 @@
                             label="User Name"
                             outlined
                             dense
-                            color="blue"
+                            color="brown"
                             autocomplete="false"
                            class="mt-4"
                            v-model="signup.username"
@@ -139,7 +141,7 @@
                             label="Email"
                             outlined
                             dense
-                            color="blue"
+                            color="brown"
                             autocomplete="false"
                             v-model="signup.email"
                           />
@@ -147,10 +149,12 @@
                             label="Password"
                             outlined
                             dense
-                            color="blue"
+                            color="brown"
                           autocomplete="false"
-                           type="password"
                            v-model="signup.password"
+                           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                           :type="show1 ? 'text' : 'password'"
+                           @click:append="show1 = !show1"
                           
                           />
                             <v-row>
@@ -210,7 +214,9 @@
     login:{
         email: '',
         password: ''
-    }
+    },
+    show: false,
+    show1: false
   }),
   props: {
     source: String

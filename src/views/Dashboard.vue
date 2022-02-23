@@ -57,7 +57,7 @@
     </v-list-item>
     <v-card-actions>
       <v-icon text class="ma-2">subscriptions</v-icon>
-      <div class="overline">AAE IdeaPro</div>
+      <div class="overline">SAASI</div>
     </v-card-actions>
   </v-card>
       </v-flex>
@@ -160,7 +160,11 @@ export default {
       {name: 'Reda', role: 'Graphic designer', avatar:'/img2.png'},
       {name: 'Zineb', role: 'web developer', avatar:'/img3.png'},
       {name: 'Hu TechGroup', role: 'Desktop developer', avatar:'/img4.png'},
-    ]
+    ],
+    user: ''
   }),
+  created(){
+      this.user = this.$route.params.data
+  }
 }
 </script>

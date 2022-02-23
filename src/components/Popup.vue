@@ -8,6 +8,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           outlined 
+          class="addclient"
           color="teal lighten-3"
            dark         
           v-bind="attrs"
@@ -31,6 +32,8 @@
               >
                 <v-text-field
                   label="Saas Name"
+                  color="brown"
+                  clearable
                   hint="enter the company name of your client"
                   v-model="saasinfo.saasname"
                 ></v-text-field>
@@ -41,7 +44,9 @@
                 md="6"
               >
                 <v-text-field
-                  label="Saas e-mail"                  
+                  label="Saas e-mail"
+                  color="brown"
+                  clearable                  
                   v-model="saasinfo.saasmail"
                 ></v-text-field>
               </v-col>
@@ -50,27 +55,58 @@
               <v-col cols="12">
                 <v-text-field
                   label="Password*"
-                  type="password"
+                  color="brown"
+                  clearable
+                  :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="show ? 'text' : 'password'"
+                  @click:append="show = !show"
                   hint="enter your password and confirme your identity"
 
                 ></v-text-field>
               </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-              >
-                <v-autocomplete
-                  :items="['Salsabiil e-commerce']"
-                  label="Services"
-                  hint="Add a Service for your client"
-                  multiple
-                  v-model="saasinfo.service"
-                ></v-autocomplete>
-              </v-col>
              
+              <v-col
+              cols="12"
+              sm="6"
+              >
+                  <div >
+                    <v-menu transition="fade-transition">
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                         dark
+                         color="brown"
+                         v-bind="attrs"
+                         v-on="on"
+
+                         
+                         >
+                            Add Service
+                        </v-btn>
+                      </template>
+                      <v-list>
+                        <v-list-item-group
+                        v-model="saasinfo.service"
+                        mandatory
+                        color="indigo"
+                        >
+                        <v-list-item
+                           v-for="service in services"
+                         :key="service.id"
+                         link
+                          >
+                          <v-list-item-title >
+                                   {{service.nom}}   v{{service.version}}      
+                          </v-list-item-title>
+                        </v-list-item>
+                        </v-list-item-group>
+                      </v-list>
+                    </v-menu>
+                  </div>
+
+              </v-col>
+              
             </v-row>
           </v-container>
-          <small>*indicates required field</small>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -104,7 +140,11 @@ import axios from 'axios'
         saasname: '',
         saasmail: '',
         service: ''
-      }
+      },
+      services: '',
+      show: false
+     
+        
     }),
     methods: {
       create: function(){
@@ -116,11 +156,21 @@ import axios from 'axios'
         .then( res=>{
           console.log(res.data)
         })
-
-
-
         this.dialog = false
+      },
+      
+    },
+     mounted(){
+        axios.get('http://localhost/saas/src/php/versions.php')
+        .then( response=>{
+          console.log(response.data)
+          this.services = response.data
+        })
       }
-    }
   }
 </script>
+<style scoped>
+ .addclient{
+     width: 200px ;
+ }
+</style>

@@ -22,7 +22,7 @@
         </v-list-item>
       </v-list>
             </v-menu>
-            <v-btn text>
+            <v-btn text @click="exit()">
                 <span>Exit</span>
                 <v-icon right>exit_to_app</v-icon>
              </v-btn>
@@ -35,9 +35,15 @@
                     </v-avatar>
                     <p class="white--text subheading mt-1 text-center">User Name</p>
                </v-flex>
-               <v-flex class="mt-4 mb-4">
-                <Popup />
-               </v-flex>
+                <v-flex class="mt-4 mb-4">
+                  <Popup />
+                </v-flex>
+                <v-flex class="mt-4 mb-4">
+                  <Services />
+                </v-flex>
+                <v-flex class="mt-4 mb-4">
+                  <Hosts />
+                </v-flex>
           </v-layout>
           <v-list flat>
               <v-list-item v-for="link in links"  :key="link.text" router :to="link.route" active-class="border">
@@ -54,6 +60,8 @@
 </template>
 <script>
 import Popup from './Popup.vue'
+import Services from './services.vue'
+import Hosts from './hosts.vue'
 export default {
    data: () => ({
       drawer: true,
@@ -64,8 +72,17 @@ export default {
       ],
      
     }),
+    
+    methods :{
+      exit: function(){
+        this.$router.push('/')
+      }
+
+    },
     components: {
-    Popup
+    Popup,
+    Services,
+    Hosts
   },
    
 }
@@ -74,4 +91,5 @@ export default {
 .border {
   border-left: 4px solid #0ba518;
 }
+
 </style>

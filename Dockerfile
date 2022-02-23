@@ -6,3 +6,5 @@ RUN vue add vutify
 RUN npm install axios
 COPY . .
 RUN npm run build
+
+FROM nginx:1.19
