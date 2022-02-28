@@ -1,6 +1,7 @@
 <?php
 include "db.php";
 include "cors-header.php";
+
 if ($_GET['action'] == 'addclient') {
     # code...
     $saasname = $_POST['saasname'];
@@ -38,3 +39,4 @@ if ($_GET['action'] == 'addclient') {
     }  
       
 }
+

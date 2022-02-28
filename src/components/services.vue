@@ -34,6 +34,9 @@
                   label="Service Name"
                   color="brown"
                   hint="enter the name of the service"
+                  :rules="nameRules"
+                  :counter="10"
+                  required
                   clearable
                   v-model="serviceinfo.servicename"
                 ></v-text-field>
@@ -111,6 +114,11 @@ import axios from 'axios'
   export default {
     data: () => ({
       dialog: false,
+      valid: false,
+       nameRules: [
+        v => !!v || 'Name is required',
+        v => v.length <= 10 || 'Name must be less than 10 characters',
+      ],
       serviceinfo: {
         servicename: '',
         serviceversion: '',
