@@ -3,7 +3,7 @@
     <v-dialog
       v-model="dialog"
       persistent
-      max-width="600px"
+      max-width="900px"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
@@ -14,7 +14,7 @@
           v-bind="attrs"
           v-on="on"
         >
-           Add New Service 
+           Service With Options
         </v-btn>
       </template>
       <v-card>
@@ -27,7 +27,7 @@
              
               <v-col
                 cols="12"
-                sm="6"
+                sm="4"
                 
               >
                 <v-text-field
@@ -43,7 +43,7 @@
               </v-col>
               <v-col
                 cols="12"
-                sm="6"
+                sm="4"
                 
               >
                 <v-text-field
@@ -54,7 +54,7 @@
                   v-model="serviceinfo.serviceversion"
                 ></v-text-field>
               </v-col>
-             
+               
              
             </v-row>
             <v-row>
@@ -164,31 +164,21 @@
                          v-model="images.url[image-1]"
                          ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="4">
-                       <v-select
-                       :items=[1,2,3,4,5]
-                       label="Number Of Options"
-                       color="brown"
-                       v-model="images.optionnumber[image-1]"
+                        <v-col
+                        cols="12"
+                        sm="4"
+                        >
+                             <v-text-field
+                          label="Image path"
+                          color="brown"
+                          hint="enter the github url of the image"
+                         required
+                         clearable
+                         v-model="images.path[image-1]"
+                         ></v-text-field>
+                        </v-col>
                        
-                       >
-                       </v-select>
-                </v-col>
-                <v-row v-for="option in images.optionnumber[image-1]" :key="option">
-                  <v-row >
-                  <v-col cols="12" sm="4">
-                       <v-select
-                       :items=opt
-                       label="Type Of Option"
-                       color="brown"
-                       
-                        v-model="images.options[(image-1)][option-1]"
-                        
-
-                       >
-                       </v-select>
-                </v-col>
-                </v-row>
+                
                 </v-row>
                       
  <!-- 
@@ -209,9 +199,122 @@
                         
             -->             
                     </v-row>
-                   
-                </v-row>
-                 <v-row   v-if="hide">
+                    <v-col cols="12" sm="12" v-if="hide"><h2>Images Options</h2></v-col>
+                    <v-row>
+                        <v-col cols="12" sm="4">
+                       <v-select
+                       :items=[1,2,3,4,5]
+                       label="Number Of options"
+                       color="brown"
+                       v-model="options.number"
+                       @change="hiden=true"
+                       v-if="hide"
+                       >
+                       </v-select>
+                </v-col>
+                    </v-row>
+                    <v-row v-if="hiden">
+                        <v-row v-for="option in options.number" :key="option">
+                             <v-col cols="12" sm="3">
+                       <v-select
+                       :items=opt
+                       label="Type Of Option"
+                       color="brown"
+                       v-model="options.type[option-1]"
+                       @change="type(options.type[option-1],option-1)"
+                       >
+                       </v-select>
+                </v-col>
+                <v-col cols="12" sm="3" v-if="stat[option-1]">
+                    <v-text-field
+                          label="Parametre"
+                          color="brown"
+                          hint="enter the Name of Param"
+                         required
+                         clearable
+                         v-model="options.key[option-1]"
+                         ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="3" v-if="stat[option-1]">
+                    <v-text-field
+                          label="Value"
+                          color="brown"
+                          hint="enter the Value Of Param"
+                         required
+                         clearable
+                         v-model="options.value[option-1]"
+                         ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="3" v-if="va[option-1]">
+                    <v-text-field
+                          label="Parametre"
+                          color="brown"
+                          hint="enter the Name of Param"
+                         required
+                         clearable
+                         v-model="options.key[option-1]"
+                         ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="3" v-if="va[option-1]">
+                    <v-select
+                       :items=images.based
+                       label="Related With"
+                       color="brown"
+                       v-model="options.value[option-1]"
+                       >
+                       </v-select>
+                </v-col>
+                 <v-col cols="12" sm="3" v-if="dep[option-1]">
+                    <v-text-field
+                          label="Parametre"
+                          color="brown"
+                          hint="enter the Name of Param"
+                         required
+                         clearable
+                         v-model="options.key[option-1]"
+                         ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="3" v-if="dep[option-1]">
+                    <v-select
+                       :items="['String','Number','Bool','Table','Object']"
+                       label="Variable Type"
+                       color="brown"
+                       v-model="options.value[option-1]"
+                       >
+                       </v-select>
+                </v-col>
+                <v-col cols="12" sm="3" v-if="doc[option-1]">
+                    <v-text-field
+                          label="Name Of the File"
+                          color="brown"
+                          hint="enter the Value Of Param"
+                         required
+                         clearable
+                         v-model="options.key[option-1]"
+                         ></v-text-field>
+                </v-col>
+                 <v-col cols="12" sm="3" v-if="doc[option-1]">
+                <v-file-input
+                  
+                  label="Import  Script"
+                  color="brown"
+                  clearable
+                  v-model="options.value[option-1]"
+                  
+  ></v-file-input>
+              </v-col>
+              <v-col cols="12" sm="3">
+                  <v-select
+                       :items=images.based
+                       label="Option Belong To"
+                       color="brown"
+                       v-model="options.belong[option-1]"
+                       >
+                       </v-select>
+              </v-col>
+                        </v-row>
+                    </v-row>
+                     <v-row   v-if="hide">
                     <v-col cols="12" sm="6">
                        <v-select
                        :items=network.concat(images.based)
@@ -231,7 +334,10 @@
                        </v-select>
                 </v-col>
                  
+                
+                   
                 </v-row>
+                
                
             </v-row>
           </v-container>
@@ -272,6 +378,7 @@
 
 <script>
 import axios from 'axios'
+//import YAML from 'yaml'
   export default {
     data: () => ({
       dialog: false,
@@ -282,17 +389,17 @@ import axios from 'axios'
       ],
       serviceinfo: {
         servicename: '',
-        serviceversion: '',
-        based: [],
-        
+        serviceversion: '', 
       },
       hide: false,
-      hoption: false,
+      hiden: false,
+      va: [],
+      stat: [],
+      dep: [],
+      doc: [],
+      opt:['Variable Static','Variable Dépendante','Variable Dynamique','file'],
       
-      sqldata: [],
-      opt:['Variable Static','Variable Dynamique','file'],
-      
-      image_based: ['php','mysql','node js','maria db'],
+      image_based: ['php:1.0','mysql:1.2','nodejs:1.0','mariadb:1.4'],
       network: ['network'],
       nginx: '',
       hosts:['110.11.45.2','112.4.12.1'],
@@ -300,16 +407,21 @@ import axios from 'axios'
           number: '',
           url:[],
           based:[],
-          optionnumber:[],
-          options:[[]],
-          dbname: '',
-          dbps: ''
-           
+          path:[]
+       
       },
       reg: {
         url: '',
         user: '',
         token: ''
+      },
+      options: {
+          number: '',
+          type: [],
+          key: [],
+          value: [],
+          belong: []
+
       },
       select: [],
         items: [
@@ -318,6 +430,7 @@ import axios from 'axios'
           
         ],
       file: '',
+      jsondecode: ''
       
     }),
     methods: {
@@ -343,7 +456,19 @@ import axios from 'axios'
 
         this.dialog = false
       },
-      based: function(){
+      type: function(e,v){
+         if(e == 'Variable Static'){
+             this.stat[v] = true
+         }
+         else if (e == 'Variable Dépendante'){
+             this.dep[v]=true
+         }
+         else if(e == 'file'){
+         this.doc[v] = true}
+         else if(e == 'Variable Dynamique'){
+           this.va[v] = true
+         }
+
          
       },
      
@@ -352,9 +477,16 @@ import axios from 'axios'
         for (var i = 0; i < this.images.url.length; i++) {
           dataL.append('name[]', this.images.based[i]);
           dataL.append('url[]', this.images.url[i]);
+          dataL.append('path[]',this.images.path[i])
           }
-        dataL.append('dbname', this.images.dbname);  
-        dataL.append('dbps', this.images.dbps);  
+        for(var j = 0; j < this.options.number; j++){
+          dataL.append('type[]', this.options.type[j])
+          dataL.append('key[]', this.options.key[j])
+          dataL.append('value[]', this.options.value[j])
+          dataL.append('belong[]', this.options.belong[j])
+
+        }  
+        dataL.append('optnumber',this.options.number) 
         dataL.append('servicename',this.serviceinfo.servicename)
         dataL.append('serviceversion',this.serviceinfo.serviceversion) 
         dataL.append('imagesnumber',this.images.number)
@@ -362,13 +494,22 @@ import axios from 'axios'
         dataL.append('reguser',this.reg.user)
         dataL.append('regtoken',this.reg.token)
         dataL.append('nginx',this.nginx)
-        axios.post('http://localhost/saas/src/php/images-service.php',dataL)
-        .then( res =>{
-            console.log(res.data)
-
+        axios.post('http://localhost/saas/src/php/images-service.php',dataL,{
+          headers :{
+             'Content-Type': 'multipart/form-data'
+          }
         })
+        .then( res=>{
+        
+          console.log(res.data)
+          
+        })
+
+
+
+        this.dialog = false
       },
-      handleFileUpload: function(event){
+    ndleFileUpload: function(event){
          this.file = event.target.files[0];
       }
     }

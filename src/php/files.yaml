@@ -1,0 +1,29 @@
+version: "1.2"
+services:
+    client22_php:
+      image: http://github.com/mohammed/php.git
+      restart: always
+      volumes:
+          - client22_php_volume:var/www/html
+      networks:
+          - client22_networks
+      environment:
+          stat_par_1: statpar1_val
+          dep_par_1: value
+          stat_par_2: statpar2_val
+      container_name: client22_php
+    client22_mysql:
+      image: http://github.com/mohammed/sql.git
+      restart: always
+      volumes:
+          - client22_mysql_volume:var/lib/mysql
+      networks:
+          - client22_networks
+      environment:
+          dyn_par_1: client22_mysql
+      container_name: client22_mysql
+volumes:
+  client22_php_volume: 
+  client22_mysql_volume: 
+networks:
+  client22_networks: 

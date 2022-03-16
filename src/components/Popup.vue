@@ -93,9 +93,10 @@
                            v-for="service in services"
                          :key="service.id"
                          link
+                         @click="getservice(service.service_name)"
                           >
                           <v-list-item-title >
-                                   {{service.nom}}   v{{service.version}}      
+                                   {{service.service_name}}   v{{service.service_version}}      
                           </v-list-item-title>
                         </v-list-item>
                         </v-list-item-group>
@@ -105,6 +106,33 @@
 
               </v-col>
               
+            </v-row>
+            <v-row v-if="hide">
+            <v-row v-for="opt in tableau" :key="opt.id">
+              <v-col cols="12" sm="4">
+                <v-text-field
+                          label="Parametre"
+                          color="brown"
+                          hint="enter the Name of Param"
+                         required
+                         clearable
+                         v-model="opt.key"
+                         disabled
+                         
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-text-field
+                          label="Value"
+                          color="brown"
+                          hint="enter the Value of Param"
+                         required
+                         clearable
+                         v-model="dep_opt.value[opt.id]"
+                         
+                ></v-text-field>
+              </v-col>
+            </v-row>
             </v-row>
           </v-container>
         </v-card-text>
@@ -133,6 +161,7 @@
 
 <script>
 import axios from 'axios'
+import YAML from 'yaml'
   export default {
     data: () => ({
       dialog: false,
@@ -142,29 +171,110 @@ import axios from 'axios'
         service: ''
       },
       services: '',
-      show: false
+      dep_opt: {
+        
+        value: [],
+        key: []
+      },
+      tableau:[{
+        id: '',
+        key: ''
+      }],
+      service_yaml:'',
+      service_opt: '',
+      show: false,
+      hide: false
      
         
     }),
     methods: {
       create: function(){
         var Cdata = new FormData()
+        var jsoncode_image = []
+        for (let index = 0; index < this.service_selected.image.length; index++){
+           jsoncode_image[index] = JSON.stringify(this.service_selected.image[index])
+           Cdata.append('image[]',jsoncode_image[index])
+        }
+        //var jsoncode_image = JSON.stringify(this.service_selected.image)
+        for (let x = 0; x < this.dep_opt.value.length; x++) {
+          Cdata.append('dep_opt_key[]',this.tableau[x].key)
+          Cdata.append('dep_opt_value[]',this.dep_opt.value[x])
+        }
+        Cdata.append('version',(this.service_selected.service_version))
+        Cdata.append('nginx',this.service_selected.nginx)
         Cdata.append('saasname',this.saasinfo.saasname)
         Cdata.append('saasmail',this.saasinfo.saasmail)
-        Cdata.append('service',this.saasinfo.service)
-        axios.post('http://localhost/saas/src/php/client.php?action=addclient',Cdata)
+        axios.post('http://localhost/saas/src/php/instance.php',Cdata)
         .then( res=>{
-          console.log(res.data)
+          let objectOrder = {
+            version : null,
+            services : null
+          }
+          console.log(Object.assign(objectOrder, JSON.parse(res.data[0].comp)))
+          //var yaml = YAML.stringify(jsondec)     
+          //console.log(YAML.stringify(JSON.parse(res.data[0].comp)))
+          var Xdata = new FormData()
+          Xdata.append('yaml',YAML.stringify(Object.assign(objectOrder, JSON.parse(res.data[0].comp))))
+          //Xdata.append('json',res.data[0].comp)
+          axios.post('http://localhost/saas/src/php/testyaml.php',Xdata)
+          .then(rep=>{
+            console.log(rep.data)
+          })
         })
         this.dialog = false
       },
+      getservice: function(service){
+          var datum = new FormData()
+          datum.append('service',service)
+          axios.post('http://localhost/saas/src/php/getservice.php',datum)
+          .then(res=>{
+           this.service_selected=JSON.parse(res.data[0].comp)
+           let j = 0
+           var obj = []
+           for (let index = 0; index < this.service_selected.image.length; index++) {
+             
+             for (let i = 0; i < this.service_selected.image[index].option.length; i++){
+               if (this.service_selected.image[index].option[i].type == 'Variable Du00e9pendante') {
+                  obj[j] = this.service_selected.image[index].option[i]
+                  j++
+             }
+             }
+             
+           }
+           console.log(YAML.stringify(JSON.parse(res.data[0].comp)));
+           this.service_opt = obj
+           for (let index = 0; index < Object.keys(obj).length; index++) {
+             this.dep_opt.key[index] = obj[index].key
+             this.tableau[index].id = index
+             this.tableau[index].key = obj[index].key
+           }
+           this.hide = true
+           //console.log(this.service_selected.service_version)
+           
+          })
+          //var yaml = YAML.stringify(this.service_selected)
+          //var dat = new FormData()
+          //dat.append('yaml',yaml)
+          
+          //axios.post('http://localhost/saas/src/php/yaml.php',dat)
+          //.then(rep=>{
+                //console.log(rep.data)
+         // })
+      }
       
     },
      mounted(){
         axios.get('http://localhost/saas/src/php/versions.php')
         .then( response=>{
-          console.log(response.data)
-          this.services = response.data
+          var obj = []
+          for (let index = 0; index < response.data.length; index++) {
+            obj[index] = JSON.parse(response.data[index].comp)
+            
+          }
+          
+          //console.log(response.data[0].comp)
+          console.log(obj[8])
+          this.services = obj
         })
       }
   }

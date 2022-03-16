@@ -1,0 +1,27 @@
+version: "1.2"
+services:
+  - client7_php:
+      image: php
+      restart: always
+      volumes:
+        - client7_php_volume:var/www/html
+      networks: client7_networks
+      environement:
+        - stat_par_1: statpar1_val
+        - dep_par_1: val
+        - stat_par_2: statpar2_val
+      container_name: client7_php
+  - client7_mysql:
+      image: mysql
+      restart: always
+      volumes:
+        - client7_mysql_volume:var/lib/mysql
+      networks: client7_networks
+      environement:
+        - dyn_par_1: client7_mysql
+      container_name: client7_mysql
+volumes:
+  client7_php_volume: "{}"
+  client7_mysql_volume: "{}"
+networks:
+  - client7_networks

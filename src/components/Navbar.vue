@@ -42,6 +42,9 @@
                   <Service />
                 </v-flex>
                 <v-flex class="mt-4 mb-4">
+                  <ServiceOpt />
+                </v-flex>
+                <v-flex class="mt-4 mb-4">
                   <Hosts />
                 </v-flex>
                 
@@ -64,6 +67,7 @@ import Popup from './Popup.vue'
 //import Services from './services.vue'
 import Hosts from './hosts.vue'
 import Service from './service-type.vue'
+import ServiceOpt from './service-with-option.vue'
 export default {
    data: () => ({
       drawer: true,
@@ -85,7 +89,8 @@ export default {
     Popup,
     //Services,
     Hosts,
-    Service
+    Service,
+    ServiceOpt
   },
    
 }

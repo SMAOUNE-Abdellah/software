@@ -1,0 +1,24 @@
+version: "1.0"
+services:
+  - fvefvr_php:
+      image: php
+      restart: always
+      volumes: fvefvr_php_volume:var/www/html
+      networks: fvefvr_networks
+      environement:
+        - stat_par_1: statpar1_val
+        - dep_par_1: fvrfv
+        - stat_par_2: statpar2_val
+      container_name: fvefvr_php
+  - fvefvr_mysql:
+      image: mysql
+      restart: always
+      volumes: fvefvr_mysql_volume:var/lib/mysql
+      networks: fvefvr_networks
+      environement:
+        - dyn_par_1: fvefvr_mysql
+      container_name: fvefvr_mysql
+volumes:
+  fvefvr_php_volume: "{}"
+  fvefvr_mysql_volume: "{}"
+networks: fvefvr_networks
