@@ -3,7 +3,7 @@
     <v-dialog
       v-model="dialog"
       persistent
-      max-width="900px"
+      max-width="800px"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
@@ -23,6 +23,7 @@
         </v-card-title>
         <v-card-text>
           <v-container>
+            
             <v-row>
              
               <v-col
@@ -264,25 +265,7 @@
                        >
                        </v-select>
                 </v-col>
-                 <v-col cols="12" sm="3" v-if="dep[option-1]">
-                    <v-text-field
-                          label="Parametre"
-                          color="brown"
-                          hint="enter the Name of Param"
-                         required
-                         clearable
-                         v-model="options.key[option-1]"
-                         ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="3" v-if="dep[option-1]">
-                    <v-select
-                       :items="['String','Number','Bool','Table','Object']"
-                       label="Variable Type"
-                       color="brown"
-                       v-model="options.value[option-1]"
-                       >
-                       </v-select>
-                </v-col>
+               
                 <v-col cols="12" sm="3" v-if="doc[option-1]">
                     <v-text-field
                           label="Name Of the File"
@@ -313,7 +296,92 @@
                        </v-select>
               </v-col>
                         </v-row>
+
+
                     </v-row>
+                   
+                       <v-col cols="12" sm="12" v-if="hide"><h2>Instance Options</h2></v-col>
+                    <v-row>
+                        <v-col cols="12" sm="4">
+                       <v-select
+                       :items=[1,2,3,4,5]
+                       label="Number Of instance options"
+                       color="brown"
+                       v-model="instance.number"
+                       @change="ins_hide=true"
+                       v-if="hide"
+                       >
+                       </v-select>
+                </v-col>
+                <v-row v-if="ins_hide">
+                  <v-row v-for="ins in instance.number" :key="ins.value">
+                      <v-col cols="12" sm="3">
+                       <v-select
+                       :items=inst
+                       label="Type Of Instance Option"
+                       color="brown"
+                       v-model="instance.type[ins-1]"
+                       @change="ins_type(instance.type[ins-1],ins-1)"
+                       >
+                       </v-select>
+                </v-col>
+                
+                 <v-col cols="12" sm="3" v-if="ins_env[ins-1]">
+                    <v-text-field
+                          label="Parametre Name"
+                          color="brown"
+                         required
+                         clearable
+                         v-model="instance.key[ins-1]"
+                         ></v-text-field>
+                </v-col>
+              
+                  <v-col cols="12" sm="3" v-if="ins_file[ins-1]">
+                    <v-text-field
+                          label="Name Of the File"
+                          color="brown"
+                         required
+                         clearable
+                         v-model="instance.key[ins-1]"
+                         ></v-text-field>
+                </v-col>
+                 <v-col cols="12" sm="3" v-if="ins_sql[ins-1]">
+                    <v-text-field
+                          label="Parameter Name"
+                          color="brown"
+                         required
+                         clearable
+                         v-model="instance.key[ins-1]"
+                         ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="3" v-if="ins_sql[ins-1]">
+                    <v-text-field
+                          label="SQL Request"
+                          color="brown"
+                          hint="enter the sql request"
+                         required
+                         clearable
+                         v-model="instance.value[ins-1]"
+                         ></v-text-field>
+                </v-col>
+                 <v-col cols="12" sm="3">
+                  <v-select
+                       :items=images.based
+                       label="Option Belong To"
+                       color="brown"
+                       v-model="instance.belong[ins-1]"
+                       >
+                       </v-select>
+              </v-col>
+                  </v-row>
+                
+                    
+                    </v-row>
+
+</v-row>
+
+
+
                      <v-row   v-if="hide">
                     <v-col cols="12" sm="6">
                        <v-select
@@ -335,10 +403,12 @@
                 </v-col>
                  
                 
-                   
-                </v-row>
+                      
+                      
+                
                 
                
+              </v-row>
             </v-row>
           </v-container>
         </v-card-text>
@@ -393,11 +463,16 @@ import axios from 'axios'
       },
       hide: false,
       hiden: false,
+      ins_hide: false,
       va: [],
       stat: [],
       dep: [],
       doc: [],
-      opt:['Variable Static','Variable Dépendante','Variable Dynamique','file'],
+      ins_env: [],
+      ins_sql : [],
+      ins_file: [],
+      opt:['Variable Static','Variable Dynamique','file'],
+      inst:['Variable ENV','SQL Request','File'],
       
       image_based: ['php:1.0','mysql:1.2','nodejs:1.0','mariadb:1.4'],
       network: ['network'],
@@ -422,6 +497,13 @@ import axios from 'axios'
           value: [],
           belong: []
 
+      },
+      instance: {
+        number: '',
+        key: [],
+        type: [],
+        value: [],
+        belong: [],
       },
       select: [],
         items: [
@@ -460,9 +542,7 @@ import axios from 'axios'
          if(e == 'Variable Static'){
              this.stat[v] = true
          }
-         else if (e == 'Variable Dépendante'){
-             this.dep[v]=true
-         }
+        
          else if(e == 'file'){
          this.doc[v] = true}
          else if(e == 'Variable Dynamique'){
@@ -470,6 +550,18 @@ import axios from 'axios'
          }
 
          
+      },
+      ins_type: function(x,y){
+         if(x == 'Variable ENV'){
+             this.ins_env[y] = true
+         }
+         else if (x == 'SQL Request'){
+             this.ins_sql[y]=true
+         }
+         else if(x == 'File'){
+         this.ins_file[y] = true}
+         
+
       },
      
        createImages: function(){
@@ -480,12 +572,26 @@ import axios from 'axios'
           dataL.append('path[]',this.images.path[i])
           }
         for(var j = 0; j < this.options.number; j++){
-          dataL.append('type[]', this.options.type[j])
-          dataL.append('key[]', this.options.key[j])
-          dataL.append('value[]', this.options.value[j])
-          dataL.append('belong[]', this.options.belong[j])
+          if (this.options.type[j] == 'Variable Static'|| this.options.type[j] =='Variable Dynamique') {
+            dataL.append('type[]', this.options.type[j])
+            dataL.append('key[]', this.options.key[j])
+            dataL.append('value[]', this.options.value[j])
+            dataL.append('belong[]', this.options.belong[j])
+          }
+          else if (this.options.type[j] == 'file')
+            dataL.append('file[]',this.options.value[j])
+            dataL.append('file_belong[]',this.options.belong[j])
 
         }  
+        for (let k = 0; k < this.instance.number; k++) {
+         
+          dataL.append('ins_type[]', this.instance.type[k])
+          dataL.append('ins_key[]', this.instance.key[k])
+          dataL.append('ins_value[]', this.instance.value[k])
+          dataL.append('ins_belong[]', this.instance.belong[k])
+          
+        }
+        dataL.append('insnumber',this.instance.number)
         dataL.append('optnumber',this.options.number) 
         dataL.append('servicename',this.serviceinfo.servicename)
         dataL.append('serviceversion',this.serviceinfo.serviceversion) 
@@ -526,4 +632,5 @@ import axios from 'axios'
  h2{
    margin-bottom: 10px;
  }
+ 
 </style>

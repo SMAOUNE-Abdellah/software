@@ -7,7 +7,7 @@ $hostip = $_POST['hostip'];
 $hostps = $_POST['hostps'];
 if (isset($distribution,$hostuser,$hostip,$hostps)) {
     # code...
-    if (filter_var($hostip,FILTER_VALIDATE_IP)) {
+   // if (filter_var($hostip,FILTER_VALIDATE_IP)) {
         # code...
         $data = [];
         $querys = "SELECT * FROM hosts WHERE ip = '$hostip'";
@@ -17,8 +17,9 @@ if (isset($distribution,$hostuser,$hostip,$hostps)) {
         }
         if (empty($data)) {
             # code...
-            $query = "INSERT INTO hosts (`name`, `ip`, `user`, `ps`) VALUES ('$distribution','$hostip','$hostuser','$hostps')" ;
+            $query = "INSERT INTO host (`name`, `ip`, `user`, `ps`) VALUES ('$distribution','$hostip','$hostuser','$hostps')" ;
             $connexion->query($query);
         }
-    }
+   // }
 }
+echo $distribution;
