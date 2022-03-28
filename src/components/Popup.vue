@@ -198,6 +198,9 @@ import YAML from 'yaml'
         value: [],
         key: []
       },
+      hosts: [{
+        id: '',
+      }],
       tableau:[{
         id: '',
         key: ''
@@ -322,8 +325,15 @@ import YAML from 'yaml'
           //console.log(response.data[0].comp)
           console.log(obj[0])
           this.services = obj
+         
+          //console.log(response.data[0].comp)
+          
+        
         })
-      }
+       
+        
+      },
+     
   }
 </script>
 <style scoped>

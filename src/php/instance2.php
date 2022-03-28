@@ -37,7 +37,7 @@ for ($k=0; $k < count($img); $k++) {
     $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['image'] = $img[$k]['url'];
     $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['container_name'] = $_POST['saasname']."_".substr($img[$k]['name'],0,-4);
     $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['restart'] = 'always';
-    $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['volumes'][] = $tiret.$_POST['saasname']."_".$img[$k]['name']."_"."volume".":".$img[$k]['path'];
+    $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['volumes'][] = $tiret.$_POST['saasname']."_".substr($img[$k]['name'],0,-4)."_"."volume".":".$img[$k]['path'];
     $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['networks'][$y] =$tiret.$_POST['saasname']."_"."networks";
     $saas['volumes'][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)."_"."volume"] = '{{}}';
     if(isset($var[$k])){
