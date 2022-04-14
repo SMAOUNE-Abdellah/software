@@ -1,0 +1,33 @@
+version: "2.2"
+services:
+    yakache_php:
+      image: registry.gitlab.com/project1242/saas/salsabeel:2.0
+      container_name: yakache_php
+      restart: always
+      volumes:
+          - yakache_php_volume:/var/www/html/
+      networks:
+          - yakache_networks
+      environment:
+          VIRTUAL_HOST: yakacheservice.com
+          LETSENCRYPT_HOST: yakacheservice.com
+          ENV1: value1
+          ENV2: value2
+          MYSQL_DATABASE: clientdb
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_HOST: yakache_mysql
+    yakache_mysql:
+      image: registry.gitlab.com/project1242/saas/mymysql:2.0
+      container_name: yakache_mysql
+      restart: always
+      volumes:
+          - yakache_mysql_volume:/var/lib/mysql/
+      networks:
+          - yakache_networks
+      environment:
+          MYSQL_ROOT_PASSWORD: rootpassword
+volumes:
+  yakache_php_volume: 
+  yakache_mysql_volume: 
+networks:
+  yakache_networks: 

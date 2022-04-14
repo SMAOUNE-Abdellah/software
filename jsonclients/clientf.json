@@ -1,0 +1,1 @@
+[{"container_name":"clientf_php","backup_path":"/var/www/html/"},{"container_name":"clientf_mysql","backup_path":"/var/lib/mysql/"}]

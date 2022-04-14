@@ -24,15 +24,13 @@ for ($i=0; $i < count($_POST['image']); $i++) {
 $tiret ='tiret';
 $saas = array();
 
-$saas['version'] = "1.2";
+$saas['version'] = "2.2";
 $x=0;
 $a=0;
 
 for ($k=0; $k < count($img); $k++) { 
     # code...
     $y = 0;
-    
-    
     //$saas->services[$k][$_POST['saasname']."_".$img[$k]['name']] = new App();
     $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['image'] = $img[$k]['url'];
     $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['container_name'] = $_POST['saasname']."_".substr($img[$k]['name'],0,-4);
@@ -40,6 +38,15 @@ for ($k=0; $k < count($img); $k++) {
     $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['volumes'][] = $tiret.$_POST['saasname']."_".substr($img[$k]['name'],0,-4)."_"."volume".":".$img[$k]['path'];
     $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['networks'][$y] =$tiret.$_POST['saasname']."_"."networks";
     $saas['volumes'][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)."_"."volume"] = '{{}}';
+
+     if ($img[$k]['name'] == $_POST['domaine']) {
+        # code...
+        $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['environment'][]['VIRTUAL_HOST'] =  $_POST['saasname'].'service.com';
+        $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['environment'][]['LETSENCRYPT_HOST'] = $_POST['saasname'].'service.com';
+        //$saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['environment'][]['LETSENCRYPT_MAIL'] = 'abdellahsmaoune@gmail.com';
+
+    }
+
     if(isset($var[$k])){
     for ($l=0; $l < count($var[$k]); $l++) { 
         # code...
@@ -53,28 +60,25 @@ for ($k=0; $k < count($img); $k++) {
             $x++;
         }
         else if ($var[$k][$l]['type'] == 'SQL Request'){
-            $repo = $_POST['saasname'].'_sql_dir_'.$var[$k][$l]['key'];
-            mkdir($repo);
-            $request = file_get_contents('C:\wamp64-2\www\saas\src\php\SQL-Request\\'.$var[$k][$l]['key'].'.sql');
+            $request = file_get_contents('/var/www/html/saas/src/php/SQL-Request/'.$var[$k][$l]['key'].'.sql');
             $request = str_replace('aaa',$_POST['ins_sql_fvalue'][$a], $request );
             
-            $result=file_put_contents('C:\wamp64-2\www\saas\src\php\\'.$repo.'\\'.$var[$k][$l]['key'].'_final'.'.sql',$request);
-            $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['volumes'][] = 'tiret'.$repo.str_replace('-','space','/:/docker-entrypoint-initdb.d/');
-            $saas['volumes'][$repo] = '{{}}';
+            $result=file_put_contents('/home/sql_directory/'.$var[$k][$l]['key'].'_final'.'.sql',$request);
+            $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['volumes'][] = 'tiret'.'/home/sql_directory'.str_replace('-','space','/:/docker-entrypoint-initdb.d/');
+           // $saas['volumes']['/home/sql_directory/'] = '{{}}';
 
             $a++;
         }
         else if($var[$k][$l]['type'] == 'File'){
              if (isset($_FILES['ins_file_fvalue'])){
-                 mkdir($_POST['saasname'].'_dir');
                  
             for ($n=0; $n < count($_FILES['ins_file_fvalue']['name']); $n++) { 
               # code...
-              $file_name = $_POST['saasname'].'_dir'.'\\'.$_FILES['ins_file_fvalue']['name'][$n];
+              $file_name = '/home/directory/'.$_FILES['ins_file_fvalue']['name'][$n];
               $nom = $_FILES['ins_file_fvalue']['tmp_name'][$n];
               move_uploaded_file($nom, $file_name);
-              $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['volumes'][] = 'tiret'.$_POST['saasname'].'_dir';
-              $saas['volumes'][$_POST['saasname'].'_dir'] = '{{}}';
+              $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['volumes'][] = 'tiret'.'/home/directory/';
+              //$saas['volumes'][$_POST['saasname'].'_dir'] = '{{}}';
           }
         
     }
@@ -92,9 +96,16 @@ for ($k=0; $k < count($img); $k++) {
     }
     else if ($option[$k][$c]['type'] == 'Variable Dynamique'){
         // $saas->services->app[$k]->environement[$l]->value = $_POST['saasname']."_".$img[$k]['name'];
-        $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['environment'][][$option[$k][$c]['key']] = $_POST['saasname'].'_'.$option[$k][$c]['value'];
+        $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['environment'][][$option[$k][$c]['key']] = $_POST['saasname'].'_'.substr($option[$k][$c]['value'],0,-4);
      }
     }
+    }
+
+    if (is_dir('/home'.'/'.$img[$k]['name'])) {
+        # code...
+        $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['volumes'][] = $tiret.'/home'.'/'.$img[$k]['name'];
+
+
     }
  
 }
@@ -117,8 +128,17 @@ while ($row = mysqli_fetch_assoc($sql2)) {
     
 }
 
+// Create the json file for the client that contain information about backup.
+$info = array();
+for ($s=0; $s < count($img); $s++) { 
+    # code...
+    $info[$s]['container_name'] = $_POST['saasname']."_".substr($img[$s]['name'],0,-4);
+    $info[$s]['backup_path'] = $img[$s]['backup'];
+}
+$json_info = json_encode($info);
+file_put_contents('/var/www/html/saas/jsonclients/'.$_POST['saasname'].'.json',$json_info);
+$page = file_get_contents('/var/www/html/saas/jsonclients/'.$_POST['saasname'].'.json');
+$page = str_replace('\/','/', $page );
+file_put_contents('/var/www/html/saas/jsonclients/'.$_POST['saasname'].'.json',$page);
+
 echo json_encode($my) ;
-
-
-
-

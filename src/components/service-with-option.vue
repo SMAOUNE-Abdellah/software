@@ -140,7 +140,7 @@
                     <v-row>
                       <v-col
                         cols="12"
-                        sm="4"
+                        sm="3"
                         >
                          <v-select
                        :items=image_based
@@ -154,7 +154,7 @@
                       
                         <v-col
                         cols="12"
-                        sm="4"
+                        sm="3"
                         >
                              <v-text-field
                           label="Image URL"
@@ -167,7 +167,7 @@
                         </v-col>
                         <v-col
                         cols="12"
-                        sm="4"
+                        sm="3"
                         >
                              <v-text-field
                           label="Image path"
@@ -178,7 +178,18 @@
                          v-model="images.path[image-1]"
                          ></v-text-field>
                         </v-col>
-                       
+                        <v-col
+                        cols="12"
+                        sm="3"
+                        >
+                             <v-text-field
+                          label="BackUp path"
+                          color="brown"
+                         required
+                         clearable
+                         v-model="images.backup[image-1]"
+                         ></v-text-field>
+                        </v-col>
                 
                 </v-row>
                       
@@ -394,10 +405,10 @@
                 </v-col>
                 <v-col cols="12" sm="6">
                        <v-select
-                       :items=hosts
-                       label="deploiement in"
+                       :items=images.based
+                       label="domaine name related with"
                        color="brown"
-                       
+                       v-model="domaine"
                        >
                        </v-select>
                 </v-col>
@@ -477,12 +488,14 @@ import axios from 'axios'
       image_based: ['php:1.0','mysql:1.2','nodejs:1.0','mariadb:1.4'],
       network: ['network'],
       nginx: '',
+      domaine: '',
       hosts:['110.11.45.2','112.4.12.1'],
       images: {
           number: '',
           url:[],
           based:[],
-          path:[]
+          path:[],
+          backup:[]
        
       },
       reg: {
@@ -570,6 +583,7 @@ import axios from 'axios'
           dataL.append('name[]', this.images.based[i]);
           dataL.append('url[]', this.images.url[i]);
           dataL.append('path[]',this.images.path[i])
+          dataL.append('backup[]',this.images.backup[i])
           }
         for(var j = 0; j < this.options.number; j++){
           if (this.options.type[j] == 'Variable Static'|| this.options.type[j] =='Variable Dynamique') {
@@ -600,6 +614,7 @@ import axios from 'axios'
         dataL.append('reguser',this.reg.user)
         dataL.append('regtoken',this.reg.token)
         dataL.append('nginx',this.nginx)
+        dataL.append('domaine',this.domaine)
         axios.post('http://localhost/saas/src/php/images-service.php',dataL,{
           headers :{
              'Content-Type': 'multipart/form-data'

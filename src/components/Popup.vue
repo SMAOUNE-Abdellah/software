@@ -24,7 +24,7 @@
         <v-card-text>
           <v-container>
             <v-row>
-             
+             <v-row>
               <v-col
                 cols="12"
                 sm="6"
@@ -38,32 +38,42 @@
                   v-model="saasinfo.saasname"
                 ></v-text-field>
               </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-                md="6"
-              >
-                <v-text-field
-                  label="Saas e-mail"
-                  color="brown"
-                  clearable                  
-                  v-model="saasinfo.saasmail"
-                ></v-text-field>
-              </v-col>
               
-             
-              <v-col cols="12">
-                <v-text-field
-                  label="Password*"
-                  color="brown"
-                  clearable
-                  :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="show ? 'text' : 'password'"
-                  @click:append="show = !show"
-                  hint="enter your password and confirme your identity"
+                  <v-col cols="12" sm="6">
+                       <v-select
+                       :items=host.ip
+                       label="deploiement in"
+                       color="brown"
+                       v-model="ip"
+                       >
+                       </v-select>
+                </v-col>
+               
 
-                ></v-text-field>
-              </v-col>
+
+
+                </v-row>
+                <v-row>
+                  <v-col cols="12" sm="6">
+                       <v-select
+                       :items="['SCP']"
+                       label="Backup Type"
+                       color="brown"
+                       v-model="backup.type"
+                       >
+                       </v-select>
+                </v-col>
+                 <v-col cols="12" sm="6">
+                       <v-select
+                       :items="['one a day','one a week','one a month']"
+                       label="Backup Number"
+                       color="brown"
+                       v-model="backup.number"
+                       >
+                       </v-select>
+                </v-col>
+             
+              </v-row>
              
               <v-col
               cols="12"
@@ -108,6 +118,7 @@
               
             </v-row>
             <v-row v-if="hide">
+               
             <v-row v-for="ins in service_ins" :key="ins.id">
               <v-col cols="12" sm="4">
                 <v-text-field
@@ -198,14 +209,24 @@ import YAML from 'yaml'
         value: [],
         key: []
       },
-      hosts: [{
-        id: '',
-      }],
+      images:'',
       tableau:[{
         id: '',
         key: ''
       }],
+      host:{
+        id: [],
+        name: [],
+        user: [],
+        ip: [],
+        ps: []
+      },
+      ip:'',
       
+      backup:{
+        type: '',
+        number: ''
+      },
       service_yaml:'',
       service_ins: '',
       show: false,
@@ -246,6 +267,7 @@ import YAML from 'yaml'
         }
         Cdata.append('version',(this.service_selected.service_version))
         Cdata.append('nginx',this.service_selected.nginx)
+        Cdata.append('domaine',this.service_selected.domaine)
         Cdata.append('saasname',this.saasinfo.saasname)
         Cdata.append('saasmail',this.saasinfo.saasmail)
         axios.post('http://localhost/saas/src/php/instance2.php',Cdata,{
@@ -266,6 +288,9 @@ import YAML from 'yaml'
           Xdata.append('name',this.service_selected.service_name)
           Xdata.append('nginx',this.service_selected.nginx)
           Xdata.append('client',this.saasinfo.saasname)
+          Xdata.append('backup_type',this.backup.type)
+          Xdata.append('backup_number',this.backup.number)
+          Xdata.append('ip',this.ip)
           //Xdata.append('json',res.data[0].comp)
           axios.post('http://localhost/saas/src/php/testyaml.php',Xdata)
           .then(rep=>{
@@ -282,7 +307,9 @@ import YAML from 'yaml'
            this.service_selected=JSON.parse(res.data[0].comp)
            let j = 0
            var obj = []
+           var img = []
            for (let index = 0; index < this.service_selected.image.length; index++) {
+             img[index] = this.service_selected.image[index].name
               if(this.service_selected.image[index].ins){
              for (let i = 0; i < this.service_selected.image[index].ins.length; i++){
                   obj[j] = this.service_selected.image[index].ins[i]
@@ -292,11 +319,12 @@ import YAML from 'yaml'
            }
            //console.log(YAML.stringify(JSON.parse(res.data[0].comp)));
            this.service_ins = obj
+           this.images = img
           // for (let index = 0; index < (Object.keys(obj)).length; index++) {
            //  this.dep_opt.key[index] = obj[index].key
             // this.tableau[index].id = index
             // this.tableau[index].key = obj[index].key
-             console.log(obj)
+             console.log(this.images[0])
           // }
            this.hide = true
            //console.log(this.service_selected.service_version)
@@ -327,8 +355,34 @@ import YAML from 'yaml'
           this.services = obj
          
           //console.log(response.data[0].comp)
-          
-        
+          axios.get('http://localhost/saas/src/php/gethost.php')
+            .then(res=>{
+              var host_id = []
+              var host_ip = []
+              var host_user = []
+              var host_name = []
+              var host_ps = []
+              for (let x = 0; x < res.data.length; x++){
+                host_id[x] = res.data[x].id
+                host_ip[x] = res.data[x].ip
+                host_user[x] = res.data[x].user
+                host_name[x] = res.data[x].name
+                host_ps[x] = res.data[x].ps
+
+               // host_ip[x] = JSON.parse(res.data[x].ip)
+              }
+              for (let i = 0; i < res.data.length; i++) {
+                this.host.id[i] = host_id[i]
+                this.host.ip[i] = host_ip[i]
+                this.host.user[i] = host_user[i]
+                this.host.name[i] = host_name[i]
+                this.host.ps[i] = host_ps[i]
+                
+              }
+              
+              console.log(this.host)
+            })
+            
         })
        
         

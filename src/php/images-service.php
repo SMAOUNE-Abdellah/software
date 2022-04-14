@@ -17,6 +17,7 @@ class services{
     public $registry_user;
     public $registry_token;
     public $nginx;
+    public $domaine;
     public $images_number;
     public $opt_number;
     public $image = array();
@@ -25,6 +26,7 @@ class services{
      public $name;
      public $url;
      public $path;
+     public $backup;
      public $option = array();    
      public $ins = array();
  }
@@ -49,15 +51,11 @@ for($a = 0; $a < $_POST['imagesnumber']; $a++){
     $ser->image[$a]->url_image = $_POST['url'][$a];
 }
 $service_sys = json_encode($ser);
-if (! is_dir($_POST['servicename'])) {
-    # code...
-    mkdir($_POST['servicename']);
-}
 
-file_put_contents('C:\wamp64-2\www\saas\src\php\\'.'\\'.$_POST['servicename'].'\\image.json',$service_sys);
-$page = file_get_contents('C:\wamp64-2\www\saas\src\php\\'.'\\'.$_POST['servicename'].'\\image.json');
+file_put_contents('/var/www/html/saas/src/php/jsondir/data.json',$service_sys);
+$page = file_get_contents('/var/www/html/saas/src/php/jsondir/data.json');
 $page = str_replace('\\','', $page );
-$result = $result=file_put_contents('C:\wamp64-2\www\saas\src\php\\'.'\\'.$_POST['servicename'].'\\image.json',$page);
+$result = file_put_contents('/var/www/html/saas/src/php/jsondir/data.json',$page);
 
 $service = new services(); 
 //if(isset($_POST['servicename'],$_POST['serviceversion'],$_POST['repourl'],$_POST['repotoken'],$_POST['nginxconnection'])){
@@ -68,6 +66,7 @@ $service = new services();
        $service->registry_user = $_POST['reguser'];
        $service->registry_token = $_POST['regtoken'];
        $service->nginx = $_POST['nginx'];
+       $service->domaine = $_POST['domaine'];
        $service->images_number = $_POST['imagesnumber'];
        $service->opt_number = $_POST['optnumber'];
        $n=0;
@@ -76,6 +75,7 @@ $service = new services();
            $service->image[$i]->name = $_POST['name'][$i];
            $service->image[$i]->url = $_POST['url'][$i];
            $service->image[$i]->path = $_POST['path'][$i];
+           $service->image[$i]->backup = $_POST['backup'][$i];
            $x=0;
            $z=0;
            for($j=0; $j<$_POST['optnumber']; $j++){
@@ -112,7 +112,7 @@ $service = new services();
                         mkdir('SQL-Request');
                       }
                       
-                       $slash0 = 'C:\wamp64-2\www\saas\src\php\SQL-Request\\';
+                       $slash0 = '/var/www/html/saas/src/php/SQL-Request/';
                        
                       file_put_contents($slash0.$_POST['ins_key'][$l].".sql", $_POST['ins_value'][$l]);
                    }
@@ -127,9 +127,10 @@ $service = new services();
       if (isset($_FILES['file'])){
           for ($n=0; $n < count($_FILES['file']['name']); $n++) { 
               # code...
+              $belongto = $_POST['file_belong'][$n];
               $file_name = $_FILES['file']['name'][$n];
               $nom = $_FILES['file']['tmp_name'][$n];
-              move_uploaded_file($nom, $file_name);
+              move_uploaded_file($nom, '/home'.'/'.$belongto.'/'.$file_name);
           }
         
     }
@@ -144,3 +145,8 @@ $service = new services();
    //}
 //}
 print_r($service);
+$cmmd= "sudo ansible-playbook /etc/ansible/Pullimages.yml --vault-password-file=/etc/ansible/.vault_pass";
+$Pullimages=shell_exec($cmmd);
+echo "<pre>";
+echo $Pullimages;
+echo "</pre>";
