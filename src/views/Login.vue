@@ -201,6 +201,7 @@
 
 <script>
   import axios from 'axios'
+  import { mapMutations } from "vuex";
   export default {
    data: () => ({
     step: 1,
@@ -223,16 +224,20 @@
   } ,
     
   methods:{
+    ...mapMutations(["setUser", "setToken"]),
       logins: function(){
         var dataL = new FormData()
         dataL.append('email',this.login.email)
         dataL.append('password',this.login.password)
         axios.post('http://localhost/saas/src/php/inscription.php?action=login',dataL)
         .then( res =>{
-            if (res.data[0]['email'] == this.login.email || res.data[0]['password'] == this.login.password) {
+          console.log(res.data[0][0])
+            if (res.data[0][0]['email'] == this.login.email || res.data[0][0]['password'] == this.login.password) {
+                this.setUser(res.data[0][0]);
+                this.setToken(res.data[1]);
                 this.$router.push('/dashboard')
             }
-
+             
         })
       },
       signups: function(){
@@ -244,7 +249,7 @@
           axios.post('http://localhost/saas/src/php/inscription.php?action=signup',dataS)
           .then( res =>{
               console.log(res)
-              this.$router.push('/dashboard')
+              this.$router.push('/')
           })
 
 

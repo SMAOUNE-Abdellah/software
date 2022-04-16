@@ -1,7 +1,8 @@
 <?php
 include "db.php";
 include "cors-header.php";
-
+$service_name = $_POST['service_name'];
+$client_selected_name = $_POST['saasname'];
 $img = [];
 $option = [[]];
 $var = [[]];
@@ -113,21 +114,26 @@ $saas['networks'][$_POST['saasname']."_"."networks"] = '{{}}';
 
 $my = json_encode($saas);
 
-$client = $_POST['saasname'];
-$query = "INSERT INTO jclient (`name`,`comp`) VALUES('$client','$my')";
-$connexion->query($query);
-$data = [];
-
-$query2 = "SELECT * FROM jclient WHERE name = '$client'";
-$sql2 = $connexion->query($query2);
-while ($row = mysqli_fetch_assoc($sql2)) {
+$client_id = [];
+$query1 = "SELECT * FROM clients WHERE fname = '$client_selected_name'";
+$sql1 = $connexion->query($query1);
+while ($row1 = mysqli_fetch_assoc($sql1)) {
     
-    $data[] = $row;
-    
-    
+    $client_id[] = $row1;
     
 }
-
+$service_id = [];
+$query2 = "SELECT * FROM services WHERE name = '$service_name'";
+$sql2 = $connexion->query($query2);
+while ($row2 = mysqli_fetch_assoc($sql2)) {
+    
+    $service_id[] = $row2;
+    
+}
+$id0 = $client_id[0]['id_clients'];
+$id1 = $service_id[0]['id_services'];
+$query = "INSERT INTO services_clients (`services_id`,`clients_id`,`comp`) VALUES('$id1','$id0','$my')";
+$connexion->query($query);
 // Create the json file for the client that contain information about backup.
 $info = array();
 for ($s=0; $s < count($img); $s++) { 

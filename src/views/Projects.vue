@@ -1,6 +1,6 @@
 <template>
   <div class="projects">
-    <Navbar/>
+    <Navbar :user-infos="getuser.username"/>
     <h1 class="subheading grey--text">Project</h1>
     <v-container>
       <v-layout row wrap class="mb-4">
@@ -39,6 +39,7 @@
             </v-flex>
           </v-layout>
       </v-card>
+
     </v-container>
     <Footer/>
   </div>
@@ -48,6 +49,8 @@
 // @ is an alias to /src
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { mapGetters } from "vuex";
+
 export default {
   name: 'projects',
   components: {
@@ -55,6 +58,7 @@ export default {
     Footer
   },
   data: () => ({
+    service: '',
     projects : [
       {title: 'Site web ', person :'khaled', due: '10/10/1987', status:'no'},
       {title: 'Application mobile', person :'Iyad', due: '02/07/1990', status:'complete'},
@@ -62,11 +66,17 @@ export default {
       {title: 'Conception', person :'Hu Java', due: '02/09/1991', status:'up'},
     ]
   }),
+  
+   computed: {
+    ...mapGetters(["getuser"])
+  },
+ 
   methods: {
     sortBy(prop){
       this.projects.sort((a,b) => a[prop] < b[prop] ? -1:1)
     }
-  }
+  },
+  
 }
 </script>
 <style >

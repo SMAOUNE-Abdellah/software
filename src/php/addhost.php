@@ -11,14 +11,14 @@ if (isset($distribution,$hostuser,$hostip,$hostps)) {
    // if (filter_var($hostip,FILTER_VALIDATE_IP)) {
         # code...
         $data = [];
-        $querys = "SELECT * FROM worker WHERE ip = '$hostip'";
+        $querys = "SELECT * FROM hosts WHERE ip = '$hostip'";
         $sqls = $connexion->query($querys);
         while ($rows = mysqli_fetch_assoc($sqls)) {
             $data[] = $rows;
         }
         if (empty($data)) {
             # code...
-            $query = "INSERT INTO worker (`name`, `ip`, `user`, `ps`) VALUES ('$distribution','$hostip','$hostuser','$hostps')";
+            $query = "INSERT INTO hosts (`name`, `ip`, `user`, `ps`) VALUES ('$distribution','$hostip','$hostuser','$hostps')";
             $connexion->query($query);
         }
     //}

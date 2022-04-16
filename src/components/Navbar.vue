@@ -33,14 +33,15 @@
                     <v-avatar size="100">
                             <img src="/img1.png" alt="">
                     </v-avatar>
-                    <p class="white--text subheading mt-1 text-center">User Name</p>
+                    <p class="white--text subheading mt-1 text-center">{{userInfos}}</p>
                </v-flex>
+               <v-flex class="mt-4 mb-4">
+                  <Client />
+                </v-flex>
                 <v-flex class="mt-4 mb-4">
                   <Popup />
                 </v-flex>
-                <v-flex class="mt-4 mb-4">
-                  <Service />
-                </v-flex>
+                
                 <v-flex class="mt-4 mb-4">
                   <ServiceOpt />
                 </v-flex>
@@ -60,17 +61,95 @@
               </v-list-item>
           </v-list>
       </v-navigation-drawer>
+      <div>
+          <div>
+      <v-alert
+        type="success"
+        dismissible
+        shaped
+        outlined
+        v-if="service_success.status">
+        The Service {{service_success.data}}  Was Created
+      </v-alert>
+      <div class="text-center">
+         <v-btn
+        v-if="!alert2"
+        dark
+        @click="alert2 = true"
+      >
+        Reset Alert
+      </v-btn>
+      </div>
+      </div>
+         <div>
+      <v-alert
+        type="success"
+        dismissible
+        shaped
+        outlined
+        v-if="client_success.status">
+        The Client {{client_success.data}}  Was Created
+      </v-alert>
+      <div class="text-center">
+         <v-btn
+        v-if="!alert1"
+        dark
+        @click="alert1 = true"
+      >
+        Reset Alert
+      </v-btn>
+      </div>
+      </div>
+      <div>
+      <v-alert
+        type="success"
+        dismissible
+        shaped
+        outlined
+        v-if="host_success.status">
+        Host With IP Address {{host_success.data}} Was Created
+      </v-alert>
+      <div class="text-center">
+         <v-btn
+        v-if="!alert"
+        dark
+        @click="alert = true"
+      >
+        Reset Alert
+      </v-btn>
+      </div>
+      </div>
+      </div>
    </nav>
 </template>
 <script>
 import Popup from './Popup.vue'
+import Client from './Client.vue'
+import {EventBus} from '@/EventBus'
 //import Services from './services.vue'
 import Hosts from './hosts.vue'
-import Service from './service-type.vue'
 import ServiceOpt from './service-with-option.vue'
+import { mapMutations } from "vuex";
+
 export default {
+   props: ["userInfos"],
    data: () => ({
       drawer: true,
+      alert: true,
+      alert1: true,
+      alert2: true,
+      host_success:{
+        status: false,
+        data: ''
+      },
+      client_success:{
+        status: false,
+        data: ''
+      },
+      service_success:{
+        status: false,
+        data: ''
+      },
       links :[
           {icon: 'dashboard', text:'Dashboard', route: '/dashboard'},
           {icon: 'folder', text:'My Project', route: '/projects'},
@@ -78,18 +157,41 @@ export default {
       ],
      
     }),
-    
+  
+ 
     methods :{
+      ...mapMutations(["setUser", "setToken"]),
       exit: function(){
+        this.setUser(null);
+        this.setToken(null);
         this.$router.push('/')
-      }
-
+      },
+    
+    },
+     mounted(){
+       EventBus.$on('host-created', data =>{
+         this.host_success.status = true
+         this.host_success.data = data
+        
+       })
+        EventBus.$on('client-created', data =>{
+          console.log(data)
+         this.client_success.status = true
+         this.client_success.data = data
+        
+       })
+       EventBus.$on('service-created', data =>{
+          console.log(data)
+         this.service_success.status = true
+         this.service_success.data = data
+        
+       })
     },
     components: {
     Popup,
     //Services,
     Hosts,
-    Service,
+    Client,
     ServiceOpt
   },
    

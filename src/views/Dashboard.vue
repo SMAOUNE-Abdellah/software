@@ -1,8 +1,8 @@
 <template>
 
   <div class="team">
-    <Navbar/>
-    <h1 class="subheading grey--text">Dashboard</h1>
+    <Navbar :user-infos="getuser.username"/>
+    <h1 class="subheading grey--text" >Dashboard </h1>
     <v-container >
       <v-layout row wrap>
          <v-flex
@@ -139,6 +139,7 @@
        
       </v-layout>
     </v-container>
+
     <Footer/>
   </div>
 </template>
@@ -147,6 +148,7 @@
 // @ is an alias to /src
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { mapGetters } from "vuex";
 export default {
   name: 'team',
   components: {
@@ -154,6 +156,10 @@ export default {
     Footer
    
   },
+  computed: {
+    ...mapGetters(["getuser"])
+  },
+
   data : () => ({
     team: [
       {name: 'Iyad', role: 'web developer', avatar:'/img1.png'},
@@ -165,6 +171,9 @@ export default {
   }),
   created(){
       this.user = this.$route.params.data
-  }
+  },
+  
+  
+ 
 }
 </script>

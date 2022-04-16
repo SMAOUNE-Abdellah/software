@@ -14,30 +14,26 @@
           v-bind="attrs"
           v-on="on"
         >
-          Add new Client
+         instanciation
         </v-btn>
       </template>
       <v-card>
         <v-card-title>
-          <span class="text-h5">Client Informations</span>
+          <span class="text-h5">Instance Informations</span>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
              <v-row>
-              <v-col
-                cols="12"
-                sm="6"
-                md="6"
-              >
-                <v-text-field
-                  label="Saas Name"
-                  color="brown"
-                  clearable
-                  hint="enter the company name of your client"
-                  v-model="saasinfo.saasname"
-                ></v-text-field>
-              </v-col>
+               <v-col cols="12" sm="6">
+                       <v-select
+                       :items=client.fname
+                       label="Client"
+                       color="brown"
+                       v-model="saasinfo.saasname"
+                       >
+                       </v-select>
+                </v-col>
               
                   <v-col cols="12" sm="6">
                        <v-select
@@ -227,6 +223,10 @@ import YAML from 'yaml'
         type: '',
         number: ''
       },
+      client:{
+          lname: [],
+          fname: []
+      },
       service_yaml:'',
       service_ins: '',
       show: false,
@@ -266,10 +266,11 @@ import YAML from 'yaml'
          } 
         }
         Cdata.append('version',(this.service_selected.service_version))
+        Cdata.append('service_name',(this.service_selected.service_name))
         Cdata.append('nginx',this.service_selected.nginx)
         Cdata.append('domaine',this.service_selected.domaine)
         Cdata.append('saasname',this.saasinfo.saasname)
-        Cdata.append('saasmail',this.saasinfo.saasmail)
+        Cdata.append('ip_add',this.ip)
         axios.post('http://localhost/saas/src/php/instance2.php',Cdata,{
           headers :{
              'Content-Type': 'multipart/form-data'
@@ -281,6 +282,7 @@ import YAML from 'yaml'
             services : null
           }
           console.log(Object.assign(objectOrder, JSON.parse(res.data)))
+          //console.log(res.data)
           //var yaml = YAML.stringify(jsondec)     
           //console.log(YAML.stringify(JSON.parse(res.data[0].comp)))
           var Xdata = new FormData()
@@ -342,11 +344,25 @@ import YAML from 'yaml'
       
     },
      mounted(){
+       axios.get('http://localhost/saas/src/php/getclient.php')  
+          .then(reponse=>{
+              var fname = []
+              var lname = []
+              for (let y = 0; y < reponse.data.length; y++) {
+                fname[y] = reponse.data[y].fname
+                lname[y] = reponse.data[y].lname
+              }
+              for (let z = 0; z < reponse.data.length; z++) {
+                this.client.lname[z] = lname[z]
+                this.client.fname[z] = fname[z]              
+              }
+              console.log(this.client)
+          })
         axios.get('http://localhost/saas/src/php/versions.php')
         .then( response=>{
           var obj = []
-          for (let index = 0; index < response.data.length; index++) {
-            obj[index] = JSON.parse(response.data[index].comp)
+          for (let k = 0; k < response.data.length; k++) {
+            obj[k] = JSON.parse(response.data[k].comp)
             
           }
           
@@ -382,6 +398,7 @@ import YAML from 'yaml'
               
               console.log(this.host)
             })
+          
             
         })
        

@@ -14,7 +14,7 @@
           v-bind="attrs"
           v-on="on"
         >
-           Service With Options
+           Add New Service
         </v-btn>
       </template>
       <v-card>
@@ -72,19 +72,8 @@
                       </v-combobox>
                 </v-col>
             </v-row>
-             <v-row v-if="select == ['URL']">
-             
-
-
-                <!-- partie à copié-->
-                
-            
-             <!-- partie à copié-->
-
-
-            </v-row>
+           
             <v-row v-if="select == ['Images']">
-                <v-row>
                    <v-col cols="12" sm="6">
                        <v-select
                        :items=[1,2,3,4,5]
@@ -96,7 +85,6 @@
                        </v-select>
                 </v-col>
                  <v-col cols="12" sm="12" v-if="hide"><h2>Registry Informations</h2></v-col>
-                </v-row>
                 
                 <v-row v-if="hide">
                 
@@ -131,13 +119,11 @@
                          ></v-text-field>
                   </v-col>
                
-                </v-row>
                 
                   <v-col cols="12" sm="12" v-if="hide"><h2>Images Informations</h2></v-col>
 
                 <v-row v-for="image in images.number" :key="image">
 
-                    <v-row>
                       <v-col
                         cols="12"
                         sm="3"
@@ -210,9 +196,7 @@
                         </v-col>
                         
             -->             
-                    </v-row>
                     <v-col cols="12" sm="12" v-if="hide"><h2>Images Options</h2></v-col>
-                    <v-row>
                         <v-col cols="12" sm="4">
                        <v-select
                        :items=[1,2,3,4,5]
@@ -224,7 +208,7 @@
                        >
                        </v-select>
                 </v-col>
-                    </v-row>
+                    
                     <v-row v-if="hiden">
                         <v-row v-for="option in options.number" :key="option">
                              <v-col cols="12" sm="3">
@@ -312,7 +296,6 @@
                     </v-row>
                    
                        <v-col cols="12" sm="12" v-if="hide"><h2>Instance Options</h2></v-col>
-                    <v-row>
                         <v-col cols="12" sm="4">
                        <v-select
                        :items=[1,2,3,4,5]
@@ -459,6 +442,8 @@
 
 <script>
 import axios from 'axios'
+import {EventBus} from '@/EventBus'
+
 //import YAML from 'yaml'
   export default {
     data: () => ({
@@ -621,9 +606,9 @@ import axios from 'axios'
           }
         })
         .then( res=>{
-        
-          console.log(res.data)
-          
+        if (res.data) {
+            EventBus.$emit('service-created',res.data.service_name)
+          }
         })
 
 

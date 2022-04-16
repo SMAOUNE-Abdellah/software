@@ -114,6 +114,7 @@
 
 <script>
 import axios from 'axios'
+import {EventBus} from '@/EventBus'
   export default {
     data: () => ({
       dialog: false,
@@ -135,7 +136,9 @@ import axios from 'axios'
         data.append('hostps',this.hostinfo.hostps)
         axios.post('http://localhost/saas/src/php/addhost.php',data)
         .then( res=>{
-          console.log(res.data)
+          if (res.data) {
+            EventBus.$emit('host-created',res.data)
+          }
         })
         this.dialog = false
       }

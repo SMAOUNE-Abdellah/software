@@ -138,13 +138,13 @@ $service = new services();
       $service_json = json_encode($service);
       //print_r($service_json);
      
-      $query = "INSERT INTO jservice (`name`,`version`,`comp`) VALUES('$service->service_name','$service->service_version','$service_json')";
+      $query = "INSERT INTO services (`name`,`version`,`comp`) VALUES('$service->service_name','$service->service_version','$service_json')";
       $connexion->query($query);
       // print_r($_FILES['value']);
 
    //}
 //}
-print_r($service);
+echo $service_json;
 $cmmd= "sudo ansible-playbook /etc/ansible/Pullimages.yml --vault-password-file=/etc/ansible/.vault_pass";
 $Pullimages=shell_exec($cmmd);
 echo "<pre>";

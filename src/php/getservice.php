@@ -2,12 +2,7 @@
 include "db.php";
 include "cors-header.php";
 
-class options{
-    public $type;
-    public $key;
-    public $val;
 
-}
 
 $service = $_POST['service'];
 /*
@@ -45,7 +40,7 @@ echo $$table;
 
 $data = [];
 
-$query2 = "SELECT * FROM jservice WHERE name = '$service'";
+$query2 = "SELECT * FROM services WHERE name = '$service'";
 $sql2 = $connexion->query($query2);
 while ($row = mysqli_fetch_assoc($sql2)) {
     
