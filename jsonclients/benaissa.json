@@ -1,0 +1,1 @@
+[{"container_name":"benaissa_php","backup_path":"/var/www/html/"},{"container_name":"benaissa_mysql","backup_path":"/var/lib/mysql/"}]

@@ -134,7 +134,7 @@ import axios from 'axios'
         data.append('serviceversion',this.serviceinfo.serviceversion)
         data.append('serviceurl',this.serviceinfo.serviceurl)
         data.append('servicesql',this.file)
-        axios.post('http://localhost/saas/src/php/addservice.php',data,{
+        axios.post('http://localhost/saasautomation/src/php/addservice.php',data,{
           headers :{
              'Content-Type': 'multipart/form-data'
           }

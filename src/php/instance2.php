@@ -3,6 +3,53 @@ include "db.php";
 include "cors-header.php";
 $service_name = $_POST['service_name'];
 $client_selected_name = $_POST['saasname'];
+
+//API Call
+$domain = "dzshops.net";
+$API_KEY = "fYqYjZBDqjX1_XsfPqBP1FnYChyHWHMsayt";
+$API_SECRET = "GWnjGKB8A8qg7Z7vNXccad";
+$dns_domain = strtolower($domain);
+$dns_type = 'A';
+$dns_name = $_POST['saasname']; // must be the name of the client,this is the prefix of the subdomain
+$dns_data = str_replace(" ", "" , $_POST['ip_add']);  //must be the ip address of the worker
+$dns_port = 80;
+$dns_priority = 10;
+$dns_protocol = 'string';
+$dns_service = 'string';
+$dns_ttl = 600;
+$dns_weight = 10;
+
+$dns_record = "[{\"data\": \"$dns_data\",\"port\": $dns_port,\"priority\": $dns_priority,\"protocol\": \"$dns_protocol\",\"service\": \"$dns_service\",\"ttl\": $dns_ttl,\"weight\": $dns_weight}]";
+$response = addDNSRecord($dns_domain,$dns_type,$dns_name,$dns_record); 
+//Function to add a subdomain
+function addDNSRecord($DNS_domain,$DNS_type,$DNS_name,$DNS_record){
+      global $API_KEY, $API_SECRET;
+
+      $url = "https://api.godaddy.com/v1/domains/$DNS_domain/records/$DNS_type/$DNS_name";
+      $header = array(
+              "Authorization: sso-key $API_KEY:$API_SECRET",
+              'Content-type: application/json',
+              'Accept: application/json'
+      );
+
+      $connexion = curl_init();
+      $timeout = 60;
+
+      curl_setopt($connexion, CURLOPT_URL, $url);
+      curl_setopt($connexion, CURLOPT_FOLLOWLOCATION, true);
+      curl_setopt($connexion, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($connexion, CURLOPT_CONNECTTIMEOUT, $timeout);
+      curl_setopt($connexion, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($connexion, CURLOPT_CUSTOMREQUEST, 'PUT');
+      curl_setopt($connexion, CURLOPT_POSTFIELDS, $DNS_record);
+      curl_setopt($connexion, CURLOPT_HTTPHEADER, $header);
+
+      $result = curl_exec($connexion);
+      curl_close($connexion);
+
+      $response = json_decode($result, true);
+      return $response;
+}
 $img = [];
 $option = [[]];
 $var = [[]];
@@ -42,8 +89,8 @@ for ($k=0; $k < count($img); $k++) {
 
      if ($img[$k]['name'] == $_POST['domaine']) {
         # code...
-        $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['environment'][]['VIRTUAL_HOST'] =  $_POST['saasname'].'service.com';
-        $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['environment'][]['LETSENCRYPT_HOST'] = $_POST['saasname'].'service.com';
+        $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['environment'][]['VIRTUAL_HOST'] =  $client_selected_name.".".$dns_domain;
+        $saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['environment'][]['LETSENCRYPT_HOST'] = $client_selected_name.".".$dns_domain;
         //$saas['services'][$k][substr($_POST['saasname']."_".$img[$k]['name'],0,-4)]['environment'][]['LETSENCRYPT_MAIL'] = 'abdellahsmaoune@gmail.com';
 
     }
@@ -61,7 +108,7 @@ for ($k=0; $k < count($img); $k++) {
             $x++;
         }
         else if ($var[$k][$l]['type'] == 'SQL Request'){
-            $request = file_get_contents('/var/www/html/saas/src/php/SQL-Request/'.$var[$k][$l]['key'].'.sql');
+            $request = file_get_contents('/var/www/html/saasautomation/src/php/SQL-Request/'.$var[$k][$l]['key'].'.sql');
             $request = str_replace('aaa',$_POST['ins_sql_fvalue'][$a], $request );
             
             $result=file_put_contents('/home/sql_directory/'.$var[$k][$l]['key'].'_final'.'.sql',$request);
@@ -142,9 +189,13 @@ for ($s=0; $s < count($img); $s++) {
     $info[$s]['backup_path'] = $img[$s]['backup'];
 }
 $json_info = json_encode($info);
-file_put_contents('/var/www/html/saas/jsonclients/'.$_POST['saasname'].'.json',$json_info);
-$page = file_get_contents('/var/www/html/saas/jsonclients/'.$_POST['saasname'].'.json');
+file_put_contents('/var/www/html/saasautomation/jsonclients/'.$_POST['saasname'].'.json',$json_info);
+$page = file_get_contents('/var/www/html/saasautomation/jsonclients/'.$_POST['saasname'].'.json');
 $page = str_replace('\/','/', $page );
-file_put_contents('/var/www/html/saas/jsonclients/'.$_POST['saasname'].'.json',$page);
+file_put_contents('/var/www/html/saasautomation/jsonclients/'.$_POST['saasname'].'.json',$page);
 
 echo json_encode($my) ;
+
+
+
+ 

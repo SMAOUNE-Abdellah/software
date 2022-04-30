@@ -26,15 +26,14 @@ if (isset($distribution,$hostuser,$hostip,$hostps)) {
        $hostps = escapeshellarg($hostps);
        $hostuser = escapeshellarg($hostuser);
        $addinfo=shell_exec('sudo /var/www/html/scriptbash/Addworker.sh ' .$hostip.' '.$hostps); 
-        if ($distribution=="Centos"){
-           $command="sudo ansible-playbook /etc/ansible/configurationCentos.yml --vault-password-file=/etc/ansible/.vault_pass -e 'IPaddresse=$hostip username=$hostuser' --connection-password-file /var/www/html/scriptbash/connection.txt";
-        }else{
-           $command="sudo ansible-playbook /etc/ansible/configurationUbuntu.yml --vault-password-file=/etc/ansible/.vault_pass -e 'IPaddresse=$hostip username=$hostuser' --connection-password-file /var/www/html/scriptbash/connection.txt";
-        }
+       if ($distribution=="Centos"){
+          $command="sudo ansible-playbook /etc/ansible/configurationCentos.yml --vault-password-file=/etc/ansible/.vault_pass -e 'IPaddresse=$hostip username=$hostuser' --connection-password-file /var/www/html/scriptbash/connection.txt";
+       }else{
+          $command="sudo ansible-playbook /etc/ansible/configurationUbuntu.yml --vault-password-file=/etc/ansible/.vault_pass -e 'IPaddresse=$hostip username=$hostuser' --connection-password-file /var/www/html/scriptbash/connection.txt";
+       }
        $hostconfig=shell_exec($command);
-       echo "<pre>";
+       $modify = shell_exec('sudo /var/www/html/scriptbash/return.sh '); 
        echo $hostconfig;
-       echo "</pre><br/>";
 
 }
 

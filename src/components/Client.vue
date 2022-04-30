@@ -127,7 +127,7 @@ export default {
            data.append('lname',this.client.lname)
            data.append('email',this.client.email)
            data.append('phone',this.client.phone)
-           axios.post('http://localhost/saas/src/php/client.php',data)
+           axios.post('http://localhost/saasautomation/src/php/client.php',data)
           .then(res=>{
             if (res.data) {
             EventBus.$emit('client-created',res.data)

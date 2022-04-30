@@ -52,10 +52,10 @@ for($a = 0; $a < $_POST['imagesnumber']; $a++){
 }
 $service_sys = json_encode($ser);
 
-file_put_contents('/var/www/html/saas/src/php/jsondir/data.json',$service_sys);
-$page = file_get_contents('/var/www/html/saas/src/php/jsondir/data.json');
+file_put_contents('/var/www/html/saasautomation/src/php/jsondir/data.json',$service_sys);
+$page = file_get_contents('/var/www/html/saasautomation/src/php/jsondir/data.json');
 $page = str_replace('\\','', $page );
-$result = file_put_contents('/var/www/html/saas/src/php/jsondir/data.json',$page);
+$result = file_put_contents('/var/www/html/saasautomation/src/php/jsondir/data.json',$page);
 
 $service = new services(); 
 //if(isset($_POST['servicename'],$_POST['serviceversion'],$_POST['repourl'],$_POST['repotoken'],$_POST['nginxconnection'])){
@@ -112,7 +112,7 @@ $service = new services();
                         mkdir('SQL-Request');
                       }
                       
-                       $slash0 = '/var/www/html/saas/src/php/SQL-Request/';
+                       $slash0 = '/var/www/html/saasautomation/src/php/SQL-Request/';
                        
                       file_put_contents($slash0.$_POST['ins_key'][$l].".sql", $_POST['ins_value'][$l]);
                    }
@@ -147,6 +147,5 @@ $service = new services();
 echo $service_json;
 $cmmd= "sudo ansible-playbook /etc/ansible/Pullimages.yml --vault-password-file=/etc/ansible/.vault_pass";
 $Pullimages=shell_exec($cmmd);
-echo "<pre>";
 echo $Pullimages;
-echo "</pre>";
+

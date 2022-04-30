@@ -330,7 +330,7 @@ import axios from 'axios'
         data.append('servicename',this.serviceinfo.servicename)
         data.append('serviceversion',this.serviceinfo.serviceversion)
         data.append('servicesql',this.file)
-        axios.post('http://localhost/saas/src/php/addservice.php',data,{
+        axios.post('http://localhost/saasautomation/src/php/addservice.php',data,{
           headers :{
              'Content-Type': 'multipart/form-data'
           }
@@ -362,7 +362,7 @@ import axios from 'axios'
         dataL.append('reguser',this.reg.user)
         dataL.append('regtoken',this.reg.token)
         dataL.append('nginx',this.nginx)
-        axios.post('http://localhost/saas/src/php/images-service.php',dataL)
+        axios.post('http://localhost/saasautomation/src/php/images-service.php',dataL)
         .then( res =>{
             console.log(res.data)
 

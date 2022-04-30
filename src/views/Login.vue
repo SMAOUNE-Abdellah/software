@@ -229,7 +229,7 @@
         var dataL = new FormData()
         dataL.append('email',this.login.email)
         dataL.append('password',this.login.password)
-        axios.post('http://localhost/saas/src/php/inscription.php?action=login',dataL)
+        axios.post('http://localhost/saasautomation/src/php/inscription.php?action=login',dataL)
         .then( res =>{
           console.log(res.data[0][0])
             if (res.data[0][0]['email'] == this.login.email || res.data[0][0]['password'] == this.login.password) {
@@ -246,7 +246,7 @@
           dataS.append('username',this.signup.username)
           dataS.append('email',this.signup.email)
           dataS.append('password',this.signup.password)
-          axios.post('http://localhost/saas/src/php/inscription.php?action=signup',dataS)
+          axios.post('http://localhost/saasautomation/src/php/inscription.php?action=signup',dataS)
           .then( res =>{
               console.log(res)
               this.$router.push('/')

@@ -134,7 +134,7 @@ import {EventBus} from '@/EventBus'
         data.append('hostuser',this.hostinfo.hostuser)
         data.append('hostip',this.hostinfo.hostip)
         data.append('hostps',this.hostinfo.hostps)
-        axios.post('http://localhost/saas/src/php/addhost.php',data)
+        axios.post('http://localhost/saasautomation/src/php/addhost.php',data)
         .then( res=>{
           if (res.data) {
             EventBus.$emit('host-created',res.data)

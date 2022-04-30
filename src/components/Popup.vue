@@ -271,7 +271,7 @@ import YAML from 'yaml'
         Cdata.append('domaine',this.service_selected.domaine)
         Cdata.append('saasname',this.saasinfo.saasname)
         Cdata.append('ip_add',this.ip)
-        axios.post('http://localhost/saas/src/php/instance2.php',Cdata,{
+        axios.post('http://localhost/saasautomation/src/php/instance2.php',Cdata,{
           headers :{
              'Content-Type': 'multipart/form-data'
           }
@@ -294,7 +294,7 @@ import YAML from 'yaml'
           Xdata.append('backup_number',this.backup.number)
           Xdata.append('ip',this.ip)
           //Xdata.append('json',res.data[0].comp)
-          axios.post('http://localhost/saas/src/php/testyaml.php',Xdata)
+          axios.post('http://localhost/saasautomation/src/php/testyaml.php',Xdata)
           .then(rep=>{
             console.log(rep.data)
           })
@@ -304,7 +304,7 @@ import YAML from 'yaml'
       getservice: function(service){
           var datum = new FormData()
           datum.append('service',service)
-          axios.post('http://localhost/saas/src/php/getservice.php',datum)
+          axios.post('http://localhost/saasautomation/src/php/getservice.php',datum)
           .then(res=>{
            this.service_selected=JSON.parse(res.data[0].comp)
            let j = 0
@@ -336,7 +336,7 @@ import YAML from 'yaml'
           //var dat = new FormData()
           //dat.append('yaml',yaml)
           
-          //axios.post('http://localhost/saas/src/php/yaml.php',dat)
+          //axios.post('http://localhost/saasautomation/src/php/yaml.php',dat)
           //.then(rep=>{
                 //console.log(rep.data)
          // })
@@ -344,7 +344,7 @@ import YAML from 'yaml'
       
     },
      mounted(){
-       axios.get('http://localhost/saas/src/php/getclient.php')  
+       axios.get('http://localhost/saasautomation/src/php/getclient.php')  
           .then(reponse=>{
               var fname = []
               var lname = []
@@ -358,7 +358,7 @@ import YAML from 'yaml'
               }
               console.log(this.client)
           })
-        axios.get('http://localhost/saas/src/php/versions.php')
+        axios.get('http://localhost/saasautomation/src/php/versions.php')
         .then( response=>{
           var obj = []
           for (let k = 0; k < response.data.length; k++) {
@@ -371,7 +371,7 @@ import YAML from 'yaml'
           this.services = obj
          
           //console.log(response.data[0].comp)
-          axios.get('http://localhost/saas/src/php/gethost.php')
+          axios.get('http://localhost/saasautomation/src/php/gethost.php')
             .then(res=>{
               var host_id = []
               var host_ip = []
@@ -396,7 +396,7 @@ import YAML from 'yaml'
                 
               }
               
-              console.log(this.host)
+              console.log(res.data)
             })
           
             

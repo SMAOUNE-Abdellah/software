@@ -523,7 +523,7 @@ import {EventBus} from '@/EventBus'
         data.append('servicename',this.serviceinfo.servicename)
         data.append('serviceversion',this.serviceinfo.serviceversion)
         data.append('servicesql',this.file)
-        axios.post('http://localhost/saas/src/php/addservice.php',data,{
+        axios.post('http://localhost/saasautomation/src/php/addservice.php',data,{
           headers :{
              'Content-Type': 'multipart/form-data'
           }
@@ -539,12 +539,19 @@ import {EventBus} from '@/EventBus'
       type: function(e,v){
          if(e == 'Variable Static'){
              this.stat[v] = true
+             this.doc[v] = false
+             this.va[v] = false
+
          }
         
          else if(e == 'file'){
-         this.doc[v] = true}
-         else if(e == 'Variable Dynamique'){
+         this.doc[v] = true
+         this.stat[v] = false
+         this.va[v] = false
+         }else if(e == 'Variable Dynamique'){
            this.va[v] = true
+           this.doc[v] = false
+           this.stat[v] = false
          }
 
          
@@ -600,7 +607,7 @@ import {EventBus} from '@/EventBus'
         dataL.append('regtoken',this.reg.token)
         dataL.append('nginx',this.nginx)
         dataL.append('domaine',this.domaine)
-        axios.post('http://localhost/saas/src/php/images-service.php',dataL,{
+        axios.post('http://localhost/saasautomation/src/php/images-service.php',dataL,{
           headers :{
              'Content-Type': 'multipart/form-data'
           }
